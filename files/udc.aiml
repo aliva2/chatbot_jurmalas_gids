@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+
+<!-- sākums -->
+<!-- * pattern nozīmē jebkuru tekstu -->
+<!-- random izvēlas nejaušu atbildi no saraksta -->
+<!-- think izmanto, lai saglabātu mainīgos bez rādīšanas lietotājam -->
+<!-- set saglabā vērtību mainīgajā -->
+<category>
+    <pattern>*</pattern>
+    <template>
+        <think><set name="topic">vards</set></think>
+        <random>
+            <li>Sveiki! Es esmu Jūrmalas gids! </li>
+            <li>Labdien! Priecājos jūs redzēt! Varu pastāstīt par Jūrmalu. </li>
+            <li>Čau! Varu pastāstīt par Jūrmalu! </li>
+        </random>
+        Kā jūs sauc? 
+    </template>
+</category>
+
+<!-- vārds sazarojums 1-->
+<!-- topic nosakab tematu sarunu daļai -->
+<!-- star attiecas uz * vietā ierakstīto tekstu -->
+<!-- get nolasa mainīgā vērtību -->
+<topic name="vards">
+    <category>
+        <pattern>MANI SAUC *</pattern>
+        <template>
+            <think><set name="vards"><star/></set></think>
+            Vai pareizi sapratu - jūs esat <get name="vards"/>?
+        </template>
+    </category>
+    
+    <category>
+        <pattern>ES ESMU *</pattern>
+        <template>
+            <think><set name="vards"><star/></set></think>
+            Vai pareizi sapratu - jūs esat <get name="vards"/>?
+        </template>
+    </category>
+    
+    <!-- that pārbauda, kas bija iepriekšējā ;čatbota atbilde -->
+    <category>
+        <pattern>*</pattern>
+        <that>*SAUC*</that>
+        <template>
+            <think><set name="vards"><star/></set></think>
+            Lūdzu atbildiet ar "jā" vai "nē" - vai jūs esat <get name="vards"/>?
+        </template>
+    </category>
+
+
+    <!-- jā -->
+    <category>
+        <pattern><set>ja</set></pattern>
+        <template>
+            <think><set name="topic">intereses</set></think>
+            Lieliski, <get name="vards"/>! Kas jūs interesē - aktivitātes (pludmale, spa u.c.) vai apskates vietas (Dzintari, Majori, Ķemeri)?
+        </template>
+    </category>
+    
+    <!-- pattern var saturēt gan tekstu, gan * papildus tekstu-->
+    <category>
+        <pattern>* <set>ja</set> *</pattern>
+        <template>
+            <think><set name="topic">intereses</set></think>
+            Lieliski, <get name="vards"/>! Kas jūs interesē - aktivitātes (pludmale, spa u.c.) vai apskates vietas (Dzintari, Majori, Ķemeri)?
+        </template>
+    </category>
+    
+    <!-- nē -->
+    <category>
+        <pattern><set>ne</set></pattern>
+        <template>
+            <think><set name="vards"></set></think>
+            Atvainojiet! Sakiet man, lūdzu, savu pareizo vārdu.
+        </template>
+    </category>
+    
+    <category>
+        <pattern>* <set>ne</set> *</pattern>
+        <template>
+            <think><set name="vards"></set></think>
+            Atvainojiet! Sakiet man, lūdzu, savu pareizo vārdu.
+        </template>
+    </category>
+    
+    <!-- that var saturēt daļu no iepriekšējās atbildes -->
+    <category>
+        <pattern>*</pattern>
+        <that>* PAREIZO VĀRDU</that>
+        <template>
+            <think><set name="vards"><star/></set></think>
+            Vai pareizi sapratu - jūs esat <get name="vards"/>?
+        </template>
+    </category>
+    
+    <!-- atbilde, ja nekas cits neder -->
+    <category>
+        <pattern>*</pattern>
+        <template>
+            <think><set name="vards"><star/></set></think>
+            Lūdzu atbildiet ar "jā" vai "nē" - vai jūs esat <get name="vards"/>?
+        </template>
+    </category>
+</topic>
+
+<!-- entitāte 1 un 2, aktivitātes vai vietas - sazarojums 2 aktivitātes vai vietas izvēle -->
+<!-- star index="2" nozīmē otro * fragmentu no pattern -->
+<topic name="intereses">
+    <category>
+        <pattern>* <set>aktivitates</set> *</pattern>
+        <template>
+            <think><set name="interese"><star index="2"/></set></think>
+            <think><set name="topic">laiks</set></think>
+            <random>
+                <li>Lieliska izvēle! </li>
+                <li>Fantastiski! </li>
+                <li>Brīnišķīgi! </li>
+            </random>
+            <get name="interese"/> ir populāra aktivitāte Jūrmalā! Kad plānojat doties - vasarā, ziemā, pavasarī vai rudenī?
+        </template>
+    </category>
+    <!-- ja pattern satur tikai set, bez *, tad star atbilst visam set saturam -->
+    <category>
+        <pattern><set>aktivitates</set></pattern>
+        <template>
+            <think><set name="interese"><star/></set></think>
+            <think><set name="topic">laiks</set></think>
+            <random>
+                <li>Lieliski, <get name="vards"/>! </li>
+                <li>Perfekta izvēle, <get name="vards"/>! </li>
+                <li>Ļoti laba doma, <get name="vards"/>! </li>
+            </random>
+            <get name="interese"/> ir brīnišķīga aktivitāte! Kad plānojat doties - vasarā, ziemā, pavasarī vai rudenī?
+        </template>
+    </category>
+    <category>
+        <pattern>* <set>apskatesvietas</set> *</pattern>
+        <template>
+            <think><set name="vieta"><star index="2"/></set></think>
+            <think><set name="topic">laiks</set></think>
+            <random>
+                <li><get name="vieta"/> ir brīnišķīga vieta! </li>
+                <li>Lieliska izvēle ar <get name="vieta"/>! </li>
+                <li><get name="vieta"/> noteikti patiks! </li>
+            </random>
+            Kad plānojat tur doties - vasarā, ziemā, pavasarī vai rudenī?
+        </template>
+    </category>
+    <category>
+        <pattern><set>apskatesvietas</set></pattern>
+        <template>
+            <think><set name="vieta"><star/></set></think>
+            <think><set name="topic">laiks</set></think>
+            <get name="vieta"/> ir 
+            <random>
+                <li> fantastiska vieta! </li>
+                <li> ļoti populāra vieta! </li>
+                <li> noteikti apskatīšanas vērta! </li>
+            </random>
+            Kad plānojat tur doties - vasarā, ziemā, pavasarī vai rudenī?
+        </template>
+    </category>
+    <!-- kļūdas gadījumā -->
+    <category>
+        <pattern>*</pattern>
+        <template>
+            Piedod, nesapratu. Kas jūs interesē - aktivitātes (pludmale, spa u.c.) vai apskates vietas (Dzintari, Majori, Ķemeri)?
+        </template>
+    </category>
+</topic>
+
+<!-- entitāte 3 laika noteikšana -->
+<topic name="laiks">
+    <category>
+        <pattern>* <set>laikssezona</set> *</pattern>
+        <template>
+            <think><set name="laiks"><star index="2"/></set></think>
+            <think><set name="topic">budzets</set></think>
+            <get name="laiks"/> ir 
+            <random>
+                <li>lielisks laiks Jūrmalai! </li>
+                <li>ļoti laba sezona! </li>
+                <li>fantastisks izvēles laiks! </li>
+            </random>
+            <!-- condition pārbauda mainīgā vērtību un izvēlas atbilstošu atbildi -->
+            <condition name="laiks">
+                <li value="vasarā">Vasarā Jūrmala ir pilna ar aktivitātēm! </li>
+                <li value="ziemā">Ziemā Jūrmala ir mierīga! </li>
+                <li value="pavasarī">Pavasarī Jūrmala ir zaļa! </li>
+                <li value="rudenī">Rudenī Jūrmala ir krāsaina! </li>
+            </condition>
+            Kāds ir jūsu budžets - mazs, vidējs vai dārgs?
+        </template>
+    </category>
+    <category>
+        <pattern><set>laikssezona</set></pattern>
+        <template>
+            <think><set name="laiks"><star/></set></think>
+            <think><set name="topic">budzets</set></think>
+            <get name="laiks"/> ir 
+            <random>
+                <li> lielisks laiks Jūrmalai! </li>
+                <li> brīnišķīgs periods! </li>
+                <li> fantastisks izvēles laiks! </li>
+            </random>
+            <condition name="laiks">
+                <li value="vasarā">Vasarā Jūrmala ir pilna ar aktivitātēm! </li>
+                <li value="ziemā">Ziemā Jūrmala ir mierīga! </li>
+                <li value="pavasarī">Pavasarī Jūrmala ir zaļa! </li>
+                <li value="rudenī">Rudenī Jūrmala ir krāsaina! </li>
+            </condition>
+            Kāds ir jūsu budžets - mazs, vidējs vai dārgs?
+        </template>
+    </category>
+    <category>
+        <pattern>*</pattern>
+        <template>
+            Piedod, nesapratu. Kad plānojat doties uz Jūrmalu - vasarā, ziemā, pavasarī vai rudenī?
+        </template>
+    </category>
+</topic>
+
+<!-- entitāte 4 budžeta noteikšana -->
+<topic name="budzets">
+    <category>
+        <pattern>* <set>budzets</set> *</pattern>
+        <template>
+            <think><set name="budzets"><star index="2"/></set></think>
+            <think><set name="topic">transports</set></think>
+            <random>
+                <li>Saprotu, <get name="vards"/>!</li>
+                <li>Lieliski!</li>
+                <li>Labi!</li>
+            </random>
+            <condition name="budzets">
+                <li value="mazs"> Ar mazu budžetu var lieliskai pavadīt laiku, bezmaksas pludmales pastaigas, Ķemeru parks! </li>
+                <li value="vidējs"> Ar vidēju budžetu, restorāni Jomas ielā 15-25 eiro, velosipēdu noma 20-30 eiro! </li>
+                <li value="augsts"> Ar dārgu budžetu, VIP biļetes, privātas ekskursijas! </li>
+            </condition>
+            Kā plānojat nokļūt uz Jūrmalu - ar vilcienu, mašīnu, autobusu vai velosipēdu?
+        </template>
+    </category>
+    <category>
+        <pattern><set>budzets</set></pattern>
+        <template>
+            <think><set name="budzets"><star/></set></think>
+            <think><set name="topic">transports</set></think>
+            <random>
+                <li>Saprotu, <get name="vards"/>! </li>
+                <li>Lieliski! </li>
+                <li>Labi! </li>
+            </random>
+            <condition name="budzets">
+                <li value="mazs"> Ar mazu budžetu var lieliskai pavadīt laiku - bezmaksas pludmales pastaigās! </li>
+                <li value="vidējs"> Ar vidēju budžetu - spa procedūras, restorāni Jomas ielā! </li>
+                <li value="augsts"> Ar dārgu budžetu - VIP biļetes, 5 zvaigžņu spa! </li>
+            </condition>
+            Kā plānojat nokļūt uz Jūrmalu - ar vilcienu, mašīnu, autobusu vai velosipēdu?
+        </template>
+    </category>
+    <category>
+        <pattern>*</pattern>
+        <template>
+            Piedod, nesapratu. Kāds ir jūsu budžets - mazs, vidējs vai augsts?
+        </template>
+    </category>
+</topic>
+
+<!-- entitāte 5 transporta noteikšana -->
+<topic name="transports">
+    <category>
+        <pattern>* <set>transports</set> *</pattern>
+        <template>
+            <think><set name="transports"><star index="2"/></set></think>
+            <think><set name="topic">kopsavilkums</set></think>
+             Labi, <get name="transports"/> ir 
+            <random>
+                <li>laba izvēle! </li>
+                <li>praktiska opcija! </li>
+                <li>ērts variants! </li>
+            </random>
+            <condition name="transports">
+                <li value="vilciens">Elektriskais vilciens brauc 30 minūtes intervālā no Rīgas! </li>
+                <li value="mašīna">Ar mašīnu būs ērti pārvietoties! </li>
+                <li value="velosipēds">Jūrmalā ir daudz velo celiņu, ekoloģiska izvēle! </li>
+                <li value="autobuss">Autobuss ir ekonomisks, bet brauc retāk! </li>
+            </condition>
+            <srai>KOPSAVILKUMS</srai>
+        </template>
+    </category>
+    <category>
+        <pattern><set>transports</set></pattern>
+        <template>
+            <think><set name="transports"><star/></set></think>
+            <think><set name="topic">kopsavilkums</set></think>
+             Labi, <get name="transports"/> ir 
+            <random>
+                <li> laba izvēle! </li>
+                <li> praktiska izvēle! </li>
+                <li> ērts variants! </li>
+            </random>
+            <condition name="transports">
+                <li value="vilciens">Elektriskais vilciens brauc ik 30 minūtes no Rīgas!</li>
+                <li value="mašīna">Ar mašīnu būs ērti pārvietoties! </li>
+                <li value="velosipēds">Jūrmalā ir daudz velo celiņu! </li>
+                <li value="autobuss">Autobuss ir ekonomisks variants! </li>
+            </condition>
+            <!-- srai izsauc citu kategoriju pēc pattern -->
+            <srai>KOPSAVILKUMS</srai>
+        </template>
+    </category>
+    <category>
+        <pattern>*</pattern>
+        <template>
+            Piedod, nesapratu. Kā plānojat nokļūt uz Jūrmalu - ar vilcienu, mašīnu, autobusu vai velosipēdu?
+        </template>
+    </category>
+</topic>
+
+<!-- kopsavilkums -->
+<topic name="kopsavilkums">
+    <!-- srai tiek izsaukts no citām kategorijām -->
+    <category>
+        <pattern>KOPSAVILKUMS</pattern>
+        <template>
+            <think><set name="topic">BEIGAS</set></think>
+            
+            Lieliski, <get name="vards"/>! Jūsu Jūrmalas ceļojuma plāns ir gatavs:
+            Vārds: <get name="vards"/>. Interese: <get name="interese"/><get name="vieta"/>. Laiks: <get name="laiks"/>. Budžets: <get name="budzets"/>. Transports: <get name="transports"/>. 
+            <random>
+                <li> Mans ieteikums - sāciet ar Jomas ielas apskati! </li>
+                <li> Iesaku apmeklēt Dzintarus! </li>
+                <li> Ķemeru parks būtu lieliski dabas baudīšanai! </li>
+                <li> Neaizmirstiet apmeklēt Majoru staciju! </li>
+            </random>
+            Laimīgu ceļojumu uz Jūrmalu!
+        </template>
+    </category>
+</topic>
+
+<!-- pēc tam -->
+    <topic name="BEIGAS">
+        <category>
+            <pattern>*</pattern>
+            <template>
+                <!-- notīra visus mainīgos, lai sāktu no jauna -->
+                <think><set name="vards"></set></think>
+                <think><set name="interese"></set></think>
+                <think><set name="vieta"></set></think>
+                <think><set name="laiks"></set></think>
+                <think><set name="budzets"></set></think>
+                <think><set name="transports"></set></think>
+                <random>
+                    <li>Sveiki! Es esmu Jūrmalas gids! </li>
+                    <li>Labdien! Priecājos jūs atkal redzēt! Varu pastāstīt par Jūrmalu. </li>
+                    <li>Čau! Plānojam vēl vienu ceļojumu uz Jūrmalu! </li>
+                </random>
+                Kā jūs sauc?
+                <think><set name="topic">vards</set></think>
+            </template>
+        </category>
+    </topic>
+
+</aiml>
