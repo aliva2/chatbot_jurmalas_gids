@@ -24,4 +24,4 @@ Tiek saglabāti un izmantoti lietotāja ievaddati, kas redzams kopsavilkumā un 
 Risināts Pandarabots, ar AIML, veidoti aiml.udc un seti ar atbildēm. 
 Tādi kā: wrongset, transports, rightset, nezinuset, ne, laikssezona, ja, budzets, apskatesvietas, aktivitates. Daudzi no tiem arī izmantoti.
 
-Tērzēšanas bots izmēģināts, bet ar brīvo lietotāja profulu nevar botu publiski izmēģināt, tikai smilškastes (sandbox) mode.
+Tērzēšanas bots izmēģināts, bet ar brīvo lietotāja profilu nevar botu publiski izmēģināt, tikai smilškastes (sandbox) mode.
